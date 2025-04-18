@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>PSD vers JSON</title>
-  <script src="https://cdn.jsdelivr.net/npm/psd.js@3.0.2/dist/psd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/psd.js/3.0.1/psd.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -43,40 +43,46 @@
   <div id="json-output">Sélectionne un fichier PSD pour voir le JSON ici.</div>
 
   <!-- Version info -->
-  <div id="version">Version : 1.0.0</div>
+  <div id="version">Version : 1.0.1</div>
 
   <script>
-    // Incrémentation du numéro de version manuellement
-    let version = "1.0.0"; // Initial version
+    // Version actuelle
+    let version = "1.0.0"; // Version initiale
 
     document.getElementById('upload').addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
-      // Lire le fichier PSD en tant que ArrayBuffer
+      // Lire le fichier PSD comme ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
-      
-      // Créer l'objet PSD avec la méthode correcte
-      const psd = await PSD.fromArrayBuffer(arrayBuffer);  // Mise à jour avec fromArrayBuffer()
-      await psd.parse();
 
-      // Extraire les informations des calques
-      const layers = [];
-      psd.tree().descendants().forEach((node) => {
-        if (!node.isGroup()) {
-          layers.push({
-            name: node.name,
-            visible: node.visible,
-            coords: node.layer?.coords || null,
-            opacity: node.layer?.opacity || null
-          });
-        }
-      });
+      try {
+        // Créer un objet PSD avec la bonne méthode
+        const psd = PSD.fromArrayBuffer(arrayBuffer);  // Assurez-vous d'utiliser cette méthode correcte
+        await psd.parse();
 
-      // Afficher le résultat JSON
-      document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
+        // Extraire les informations des calques
+        const layers = [];
+        psd.tree().descendants().forEach((node) => {
+          if (!node.isGroup()) {
+            layers.push({
+              name: node.name,
+              visible: node.visible,
+              coords: node.layer?.coords || null,
+              opacity: node.layer?.opacity || null
+            });
+          }
+        });
 
-      // Afficher la version actuelle
+        // Afficher le résultat JSON
+        document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
+      } catch (error) {
+        // Si une erreur survient lors de l'analyse du fichier PSD
+        console.error("Erreur lors du traitement du fichier PSD:", error);
+        document.getElementById('json-output').textContent = "Erreur lors du traitement du fichier PSD.";
+      }
+
+      // Afficher la version
       document.getElementById('version').textContent = "Version : " + version;
     });
   </script>
