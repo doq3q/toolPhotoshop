@@ -29,6 +29,12 @@
       overflow: auto;
       white-space: pre-wrap;
     }
+
+    #version {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: #888;
+    }
   </style>
 </head>
 <body>
@@ -36,7 +42,13 @@
   <input type="file" id="upload" accept=".psd">
   <div id="json-output">Sélectionne un fichier PSD pour voir le JSON ici.</div>
 
+  <!-- Version info -->
+  <div id="version">Version : 1.0.0</div>
+
   <script>
+    // Incrémentation du numéro de version manuellement
+    let version = "1.0.0"; // Initial version
+
     document.getElementById('upload').addEventListener('change', async (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -63,6 +75,9 @@
 
       // Afficher le résultat JSON
       document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
+
+      // Afficher la version actuelle
+      document.getElementById('version').textContent = "Version : " + version;
     });
   </script>
 </body>
