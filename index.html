@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>PSD vers JSON</title>
-  <script src="https://unpkg.com/@webtoon/psd/dist/psd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/psd.js@3.0.2/dist/psd.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -41,10 +41,14 @@
       const file = event.target.files[0];
       if (!file) return;
 
+      // Lire le fichier PSD en tant que ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
-      const psd = await PSD.fromBuffer(new Uint8Array(arrayBuffer));  // Correction ici
+      
+      // Créer l'objet PSD avec la méthode correcte
+      const psd = await PSD.fromArrayBuffer(arrayBuffer);  // Mise à jour avec fromArrayBuffer()
       await psd.parse();
 
+      // Extraire les informations des calques
       const layers = [];
       psd.tree().descendants().forEach((node) => {
         if (!node.isGroup()) {
@@ -57,6 +61,7 @@
         }
       });
 
+      // Afficher le résultat JSON
       document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
     });
   </script>
