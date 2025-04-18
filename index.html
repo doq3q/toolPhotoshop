@@ -42,7 +42,7 @@
       if (!file) return;
 
       const arrayBuffer = await file.arrayBuffer();
-      const psd = new window.PSD(new Uint8Array(arrayBuffer));
+      const psd = await PSD.fromBuffer(new Uint8Array(arrayBuffer));  // Correction ici
       await psd.parse();
 
       const layers = [];
@@ -61,4 +61,4 @@
     });
   </script>
 </body>
-</html
+</html>
