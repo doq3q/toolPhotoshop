@@ -2,9 +2,63 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Test</title>
+  <title>PSD vers JSON</title>
+  <script src="https://unpkg.com/@webtoon/psd/dist/psd.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+
+    #json-output {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <h1>Test de chargement</h1>
+  <h1>📂 Upload un fichier PSD</h1>
+  <input type="file" id="upload" accept=".psd">
+  <div id="json-output">Sélectionne un fichier PSD pour voir le JSON ici.</div>
+
+  <script>
+    document.getElementById('upload').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const psd = new window.PSD(new Uint8Array(arrayBuffer));
+      await psd.parse();
+
+      const layers = [];
+      psd.tree().descendants().forEach((node) => {
+        if (!node.isGroup()) {
+          layers.push({
+            name: node.name,
+            visible: node.visible,
+            coords: node.layer?.coords || null,
+            opacity: node.layer?.opacity || null
+          });
+        }
+      });
+
+      document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
+    });
+  </script>
 </body>
-</html>
+</html
