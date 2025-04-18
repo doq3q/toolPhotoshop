@@ -2,54 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>PSD vers JSON</title>
-  <script src="https://cdn.jsdelivr.net/npm/psd/dist/psd.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background: #f6f6f6;
-    }
-    #json-output {
-      white-space: pre-wrap;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      max-height: 400px;
-      overflow: auto;
-      margin-top: 1rem;
-    }
-  </style>
+  <title>Test</title>
 </head>
 <body>
-  <h1>📂 Convertisseur PSD → JSON</h1>
-  <input type="file" id="upload" accept=".psd">
-  <div id="json-output"></div>
-
-  <script>
-    document.getElementById('upload').addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const arrayBuffer = await file.arrayBuffer();
-      const psd = new PSD(new Uint8Array(arrayBuffer));
-      await psd.parse();
-
-      const layers = [];
-      psd.tree().descendants().forEach((node) => {
-        if (!node.isGroup()) {
-          layers.push({
-            name: node.name,
-            visible: node.visible,
-            coords: node.layer?.coords || null,
-            opacity: node.layer?.opacity || null
-          });
-        }
-      });
-
-      document.getElementById('json-output').textContent = JSON.stringify(layers, null, 2);
-    });
-  </script>
+  <h1>Test de chargement</h1>
 </body>
 </html>
